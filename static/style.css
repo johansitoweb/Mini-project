@@ -1,0 +1,8 @@
+body{
+    background-color: black
+}
+
+.text-heder{
+    color-interpolation-filters: linearRGB;
+    counter-reset: initial;
+}

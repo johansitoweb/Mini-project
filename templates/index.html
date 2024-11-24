@@ -1,0 +1,49 @@
+<!DOCTYPE html>  
+<html lang="es">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+    <title>Clon de ChatGPT</title>  
+    <script src="https://unpkg.com/htmx.org@1.9.3"></script>  
+    <style>  
+        body { font-family: Arial, sans-serif; margin: 20px; }  
+        #chatbox { max-width: 600px; margin: auto; border: 1px solid #ccc; padding: 10px; }  
+        .message { margin: 5px; }  
+        .user { color: blue; }  
+        .bot { color: green; }  
+    </style>  
+</head>  
+<body>  
+    <h1>Clon de ChatGPT</h1>  
+    <div id="chatbox">  
+        <div id="messages"></div>  
+        <input id="userInput" type="text" placeholder="Escribe tu mensaje aquí..." />  
+        <button id="sendButton" hx-post="/chat" hx-trigger="click" hx-target="#messages" hx-params="{'message': document.getElementById('userInput').value}" hx-swap="innerHTML" onclick="sendMessage()">Enviar</button>  
+    </div>  
+    
+    <script>  
+        function sendMessage() {  
+            const userInput = document.getElementById('userInput');  
+            const messageDiv = document.createElement('div');  
+            messageDiv.className = 'message user';  
+            messageDiv.textContent = userInput.value;  
+            document.getElementById('messages').appendChild(messageDiv);  
+            
+            const xhr = new XMLHttpRequest();  
+            xhr.open("POST", "/chat", true);  
+            xhr.setRequestHeader("Content-Type", "application/json");  
+            xhr.onload = function () {  
+                if (xhr.status == 200) {  
+                    const response = JSON.parse(xhr.responseText);  
+                    const botMessageDiv = document.createElement('div');  
+                    botMessageDiv.className = 'message bot';  
+                    botMessageDiv.textContent = response.reply;  
+                    document.getElementById('messages').appendChild(botMessageDiv);  
+                }  
+            };  
+            xhr.send(JSON.stringify({ message: userInput.value }));  
+            userInput.value = ''; // Clear input field  
+        }  
+    </script> 
+</body>  
+</html>
